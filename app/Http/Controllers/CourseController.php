@@ -6,19 +6,22 @@ use Illuminate\Http\Request;
 use App\Models\Online_course;
 use App\Imports\CourseImport;
 use App\Exports\CourseExport;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB; 
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
 {
     public function index()
     {
-        $courses = Online_course::all();
+        $courses = Online_course::paginate(10);
         return view('admin.course.course', compact('courses'));
     }
 
     public function userView()
     {
-        $courses = Online_course::all();
+        $courses = Online_course::paginate(10);
         return view('user.course.course', compact('courses'));
     }
 
@@ -44,14 +47,9 @@ class CourseController extends Controller
             'deskripsi' => 'nullable|string',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
         try {
-            Course::create($request->all());
+            Online_course::create($validated);
+
             return redirect()->route('course.index')
                 ->with('success', 'Data course berhasil ditambahkan!');
         } catch (\Exception $e) {
@@ -91,51 +89,100 @@ class CourseController extends Controller
     }
 
     public function destroy($id_online_course)
-        {
-            $course = Online_course::findOrFail($id_online_course);
-            $course->delete();
+    {
+        $course = Online_course::findOrFail($id_online_course);
+        $course->delete();
 
-            return redirect()->route('course.index')->with('success', 'Course berhasil dihapus!');
-        }
+        return redirect()->route('course.index')->with('success', 'Course berhasil dihapus!');
+    }
 
-        public function downloadTemplate()
+    public function downloadTemplate()
     {
         return Excel::download(new CourseExport, 'template_course.xlsx');
     }
 
     public function import(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'excel_file' => 'required|mimes:xlsx,xls|max:2048',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->with('error', 'File tidak valid. Pastikan file berformat Excel (.xlsx atau .xls) dan ukuran maksimal 2MB.');
-        }
-
         try {
-            $import = new CourseImport();
-            Excel::import($import, $request->file('excel_file'));
+            // Validasi file upload
+            $request->validate([
+                'excel_file' => 'required|file|mimes:xlsx,xls|max:10240', // Max 10MB
+            ]);
 
-            $successCount = $import->getSuccessCount();
-            $errorCount = $import->getErrorCount();
-            $errors = $import->getErrors();
+            Log::info("=== STARTING IMPORT DEBUG ===");
+            
+            $file = $request->file('excel_file');
+            
+            // Debug informasi file
+            Log::info("File info:", [
+                'original_name' => $file->getClientOriginalName(),
+                'mime_type' => $file->getMimeType(),
+                'size' => $file->getSize(),
+                'extension' => $file->getClientOriginalExtension(),
+                'is_valid' => $file->isValid()
+            ]);
 
-            if ($errorCount > 0) {
-                $message = "Import selesai dengan {$successCount} data berhasil dan {$errorCount} data gagal.";
-                return redirect()->route('course.index')
-                    ->with('warning', $message)
-                    ->with('import_errors', $errors);
+            // Pastikan file valid
+            if (!$file->isValid()) {
+                throw new \Exception('File upload tidak valid');
             }
 
-            return redirect()->route('course.index')
-                ->with('success', "Import berhasil! {$successCount} data course telah ditambahkan.");
+            // Import dengan explicit reader type
+            $import = new CourseImport();
+            Excel::import($import, $file, null, \Maatwebsite\Excel\Excel::XLSX);
+            
+            // Log hasil
+            Log::info("=== IMPORT COMPLETED ===");
+            Log::info("Processed rows: " . $import->getProcessedRows());
+            Log::info("Success count: " . $import->getSuccessCount());
+            Log::info("Error count: " . $import->getErrorCount());
+            Log::info("Debug info: " . json_encode($import->getDebugInfo()));
+            
+            // Cek data di database
+            $totalRecords = Online_course::count();  // Perbaiki nama tabel
+            Log::info("Total records in database: " . $totalRecords);
 
-        } catch (\Exception $e) {
+            // Return dengan redirect untuk web form
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Import berhasil!',
+                    'processed' => $import->getProcessedRows(),
+                    'success' => $import->getSuccessCount(),
+                    'errors' => $import->getErrorCount(),
+                    'debug' => $import->getDebugInfo(),
+                    'total_in_db' => $totalRecords
+                ]);
+            } else {
+                $message = "Import berhasil! " . $import->getSuccessCount() . " data berhasil diimpor.";
+                if ($import->getErrorCount() > 0) {
+                    $message .= " " . $import->getErrorCount() . " data gagal diimpor.";
+                }
+                
+                return redirect()->route('course.index')
+                    ->with('success', $message);
+            }
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error("VALIDATION ERROR: " . json_encode($e->errors()));
+            
             return redirect()->back()
-                ->with('error', 'Terjadi kesalahan saat import: ' . $e->getMessage());
+                ->withErrors($e->errors())
+                ->with('error', 'File tidak valid. Pastikan mengupload file Excel (.xlsx/.xls)');
+                
+        } catch (\Exception $e) {
+            Log::error("IMPORT EXCEPTION: " . $e->getMessage());
+            Log::error("Stack trace: " . $e->getTraceAsString());
+            
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'error' => $e->getMessage(),
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile()
+                ], 500);
+            } else {
+                return redirect()->back()
+                    ->with('error', 'Terjadi kesalahan saat import: ' . $e->getMessage());
+            }
         }
     }
 }

@@ -157,9 +157,9 @@
                 </div>
 
                 <form action="{{ route('course.import') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    
-                    {{-- File Upload --}}
+                 @csrf
+
+                    {{-- Upload Area --}}
                     <div class="mb-6">
                         <label class="block text-gray-700 font-medium mb-2">Upload File Excel</label>
                         <div class="flex items-center justify-center w-full">
@@ -171,7 +171,7 @@
                                     <p class="mb-2 text-sm text-gray-500">
                                         <span class="font-semibold">Klik untuk upload</span> atau drag and drop
                                     </p>
-                                    <p class="text-xs text-gray-500">Excel files only (.xlsx, .xls)</p>
+                                    <p class="text-xs text-gray-500">Hanya file .xlsx atau .xls</p>
                                 </div>
                                 <input id="excel-file" name="excel_file" type="file" class="hidden" accept=".xlsx,.xls" required onchange="showFileName(this)">
                             </label>

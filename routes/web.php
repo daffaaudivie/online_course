@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\RekomendasiController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,6 +28,9 @@ Route::middleware(['auth'])->prefix('user')->group(function () {
     Route::post('/favorites/{id_online_course}', [FavoriteController::class, 'store'])->name('favorites.store');
     Route::delete('/favorites/{id_online_course}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+    Route::get('/user/rekomendasi', [RekomendasiController::class, 'form'])->name('rekomendasi.form');
+    Route::post('/user/rekomendasi', [RekomendasiController::class, 'proses'])->name('rekomendasi.proses');
+
 });
 
 // Admin routes (menggunakan guard admin)

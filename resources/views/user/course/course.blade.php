@@ -157,7 +157,7 @@
 
 <script>
 // Data courses untuk modal - convert ke array biasa
-const coursesData = {!! json_encode($courses->toArray()) !!};
+const coursesData = {!! json_encode($courses->values()) !!};
 
 function openModal(courseIndex) {
     const modal = document.getElementById('courseModal');

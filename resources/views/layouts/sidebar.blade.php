@@ -36,6 +36,14 @@
                 <span class="font-medium">Data Kriteria</span>
             </a>
 
+            <a href="{{ route('rekomendasi.form') }}"
+               class="flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-colors duration-200 {{ request()->routeIs('admin.kriteria.*') ? 'bg-gray-700 text-white' : '' }}">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v6a2 2 0 002 2h2m0 0h2m-2 0v4a2 2 0 002 2h2a2 2 0 002-2v-4m-6 0V9a2 2 0 012-2h2a2 2 0 012 2v6"></path>
+                </svg>
+                <span class="font-medium">Rekomendasi Course</span>
+            </a>
+
             <!-- Data User Favorite -->
             <a href="{{ route('favorites.index') }}"
                class="flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-colors duration-200 {{ request()->routeIs('admin.users.*') ? 'bg-gray-700 text-white' : '' }}">

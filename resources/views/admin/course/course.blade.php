@@ -163,22 +163,37 @@
     </div>
 </div>
 
+
+
 <script>
-// Data courses untuk modal - convert ke array biasa
-const coursesData = {!! json_encode($courses->toArray()) !!};
+// Data courses untuk modal - perbaikan untuk menangani data yang benar
+const coursesData = {!! json_encode($courses->values()) !!};
 
 function openModal(courseIndex) {
+    console.log('courseIndex:', courseIndex);
+console.log('coursesData:', coursesData);
     const modal = document.getElementById('courseModal');
     const modalTitle = document.getElementById('modalTitle');
     const modalBody = document.getElementById('modalBody');
     
+    console.log('Course Index:', courseIndex);
+    console.log('All Courses Data:', coursesData);
+    
+    // Perbaikan: Cek apakah data berupa array atau object dengan key 'data'
+    let coursesList = coursesData;
+    if (coursesData.data && Array.isArray(coursesData.data)) {
+        coursesList = coursesData.data;
+    }
+    
     // Ambil course berdasarkan index
-    const course = coursesData[courseIndex];
+    const course = coursesList[courseIndex];
+    console.log('Selected Course:', course);
     
     if (course) {
         modalTitle.textContent = course.judul || 'Detail Course';
         modalBody.innerHTML = `
-            <!-- Deskripsi -->
+            <div class="space-y-6">
+                <!-- Deskripsi -->
                 ${course.deskripsi ? `
                 <div class="">
                     <label class="block text-sm font-semibold text-slate-700 mb-3">Deskripsi Course</label>
@@ -187,9 +202,8 @@ function openModal(courseIndex) {
                     </div>
                 </div>
                 ` : ''}
-        <div class="space-y-6">
+                
                 <!-- Informasi Utama -->
-
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="space-y-4">
                         <div>
@@ -278,7 +292,6 @@ function openModal(courseIndex) {
                     </div>
                 </div>
                 
-                
                 <!-- Link Course -->
                 <div class="border-t pt-4">
                     <label class="block text-sm font-semibold text-slate-700 mb-3">Akses Course</label>
@@ -290,6 +303,17 @@ function openModal(courseIndex) {
                         Buka Course Sekarang
                     </a>
                 </div>
+            </div>
+        `;
+    } else {
+        // Jika data tidak ditemukan
+        modalTitle.textContent = 'Detail Course';
+        modalBody.innerHTML = `
+            <div class="text-center py-8">
+                <svg class="w-16 h-16 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p class="text-slate-500">Data course tidak ditemukan</p>
             </div>
         `;
     }
@@ -340,7 +364,6 @@ function confirmDelete(courseId, courseTitle) {
     deleteModal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 }
-
 
 function closeDeleteModal() {
     const deleteModal = document.getElementById('deleteModal');

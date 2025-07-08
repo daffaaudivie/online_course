@@ -9,7 +9,7 @@ class ProfileMatchingHelper
      */
     public static function convertKategori($kategori, $preferensi): int
     {
-        return strtolower($kategori) === strtolower($preferensi) ? 5 : 3;
+        return strtolower($kategori) === strtolower($preferensi) ? 5 : 1;
     }
 
     /**

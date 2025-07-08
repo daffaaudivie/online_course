@@ -6,6 +6,8 @@ use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\RekomendasiController;
+use Illuminate\Support\Facades\DB;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,30 +20,36 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // User routes (menggunakan guard default/web)
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [CourseController::class, 'dashboard'])->name('dashboard');
 });
+
 
 Route::middleware(['auth'])->prefix('user')->group(function () {
     Route::get('/courses', [CourseController::class, 'userView'])->name('user.courses');
     Route::post('/favorites/{id_online_course}', [FavoriteController::class, 'store'])->name('favorites.store');
     Route::delete('/favorites/{id_online_course}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
-    Route::get('/user/rekomendasi', [RekomendasiController::class, 'form'])->name('rekomendasi.form');
-    Route::post('/user/rekomendasi', [RekomendasiController::class, 'proses'])->name('rekomendasi.proses');
+    Route::get('/rekomendasi', [RekomendasiController::class, 'form'])->name('rekomendasi.form');
+    Route::post('/rekomendasi', [RekomendasiController::class, 'proses'])->name('rekomendasi.proses');
+    Route::get('/riwayat-rekomendasi', [RekomendasiController::class, 'riwayat'])->name('rekomendasi.riwayat');
+    Route::get('/riwayat-rekomendasi/{id}', [RekomendasiController::class, 'riwayatDetail'])->name('rekomendasi.riwayat.detail');
+    Route::get('/rekomendasi/riwayat/{id}', [RekomendasiController::class, 'riwayatDetail'])->name('rekomendasi.riwayat.detail');
+    Route::post('/rekomendasi/simpan', [RekomendasiController::class, 'simpan'])->name('rekomendasi.simpan');
+    Route::delete('/rekomendasi/riwayat/{id}', [RekomendasiController::class, 'riwayatDelete'])->name('rekomendasi.riwayat.delete'); 
+     Route::get('/kriteria', [KriteriaController::class, 'indexUser'])->name('kriteria.indexUser');
+
 
 });
 
 // Admin routes (menggunakan guard admin)
 Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard_admin');
-    Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria.index');
+    Route::get('/dashboard', [CourseController::class, 'dashboardAdmin'])->name('dashboard_admin');
     Route::get('course/download/template', [CourseController::class, 'downloadTemplate'])
         ->name('course.download-template');
     Route::post('course/import/excel', [CourseController::class, 'import'])
         ->name('course.import');
     Route::get('admin/online_course/{id_online_course}/edit', [CourseController::class, 'edit'])->name('course.edit');
+        Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria.index');
 
 
     // ✅ Perbaikan: chaining parameter() di dalam resource() method

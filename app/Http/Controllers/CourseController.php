@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Online_course;
+use App\Models\RekomendasiHistory;
+use App\Models\Kriteria;
+use App\Models\Favorite;
+use App\Models\User;
 use App\Imports\CourseImport;
 use App\Exports\CourseExport;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB; 
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
@@ -18,6 +23,46 @@ class CourseController extends Controller
         $courses = Online_course::paginate(10);
         return view('admin.course.course', compact('courses'));
     }
+
+    public function dashboard()
+{
+    $user = Auth::user();
+
+    // Total course
+    $totalCourses = Online_course::count();
+
+    // Total favorit user
+    $favoriteCourses = Favorite::where('user_id', $user->id)->count();
+
+    // Total rekomendasi yang disimpan user
+    $totalRecommendations = RekomendasiHistory::where('user_id', $user->id)->count();
+
+    return view('dashboard', compact(
+        'totalCourses',
+        'favoriteCourses',
+        'totalRecommendations'
+    ));
+}
+
+    public function dashboardAdmin()
+{
+    $admin = Auth::guard('admin')->user(); // Perbaiki ini juga
+
+    // Total course
+    $totalCourses = Online_course::count();
+    $totalKriteria = Kriteria::count();
+    $totalUsers = User::count();
+
+    // Total rekomendasi yang disimpan user (jika diperlukan)
+    // $totalRecommendations = RekomendasiHistory::where('user_id', $admin->id)->count();
+
+    return view('dashboard_admin', compact(
+        'totalCourses',
+        'totalKriteria',
+        'totalUsers'
+        // 'totalRecommendations' // tambahkan jika diperlukan
+    ));
+}
 
     public function userView()
     {
@@ -62,7 +107,7 @@ class CourseController extends Controller
     public function edit($id)
     {
         $course = Online_course::findOrFail($id);
-        return view('course.edit_course', compact('course'));
+        return view('admin.course.edit_course', compact('course'));
     }
 
     public function update(Request $request, $id)

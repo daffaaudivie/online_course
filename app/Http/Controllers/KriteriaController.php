@@ -11,4 +11,10 @@ class KriteriaController extends Controller
         $dataKriteria = Kriteria::all();
         return view('admin.kriteria.kriteria', compact('dataKriteria'));
     }
+
+    public function indexUser()
+    {
+        $dataKriteria = Kriteria::all();
+        return view('user.kriteria.kriteria', compact('dataKriteria'));
+    }
 }

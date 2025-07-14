@@ -47,6 +47,7 @@
                                 <option value="100000" {{ old('harga', request('harga')) == '100000' ? 'selected' : '' }}>< Rp 100.000</option>
                                 <option value="500000" {{ old('harga', request('harga')) == '500000' ? 'selected' : '' }}>< Rp 500.000</option>
                                 <option value="1000000" {{ old('harga', request('harga')) == '1000000' ? 'selected' : '' }}>< Rp 1.000.000</option>
+                                <option value="1000001" {{ old('harga', request('harga')) == '1000001' ? 'selected' : '' }}>> Rp 1.000.000</option>
                             </select>
                         </div>
 
@@ -55,14 +56,15 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
                             <select name="rating" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
                                 <option value="">Pilih Rating</option>
-                                <option value="1.0-1.5" {{ old('rating', request('rating')) == '1.0-4.5' ? 'selected' : '' }}>1.0 - 1.5</option>
-                                <option value="1.5-2.0" {{ old('rating', request('rating')) == '1.5-2.0' ? 'selected' : '' }}>1.5 - 2.0</option>
-                                <option value="2.0-2.5" {{ old('rating', request('rating')) == '2.0-2.5' ? 'selected' : '' }}>2.0 - 2.5</option>
-                                <option value="2.5-3-0" {{ old('rating', request('rating')) == '2.5-3-0' ? 'selected' : '' }}>2.5 - 3-0</option>
-                                <option value="3.0-3.5" {{ old('rating', request('rating')) == '3.0-3.5' ? 'selected' : '' }}>3.0 - 3.5</option>
-                                <option value="3.5-4.0" {{ old('rating', request('rating')) == '3.5-4.0' ? 'selected' : '' }}>3.5 - 4.0</option>
-                                <option value="4.0-4.5" {{ old('rating', request('rating')) == '4.0-4.5' ? 'selected' : '' }}>4.0 - 4.5</option>
                                 <option value="4.5-5.0" {{ old('rating', request('rating')) == '4.5-5.0' ? 'selected' : '' }}>4.5 - 5.0</option>
+                                <option value="4.0-4.5" {{ old('rating', request('rating')) == '4.0-4.5' ? 'selected' : '' }}>4.0 - 4.5</option>
+                                <option value="3.5-4.0" {{ old('rating', request('rating')) == '3.5-4.0' ? 'selected' : '' }}>3.5 - 4.0</option>
+                                <option value="3.0-3.5" {{ old('rating', request('rating')) == '3.0-3.5' ? 'selected' : '' }}>3.0 - 3.5</option>
+                                <option value="2.5-3-0" {{ old('rating', request('rating')) == '2.5-3-0' ? 'selected' : '' }}>2.5 - 3-0</option>
+                                <option value="2.0-2.5" {{ old('rating', request('rating')) == '2.0-2.5' ? 'selected' : '' }}>2.0 - 2.5</option>
+                                <option value="1.5-2.0" {{ old('rating', request('rating')) == '1.5-2.0' ? 'selected' : '' }}>1.5 - 2.0</option>
+                                <option value="1.0-1.5" {{ old('rating', request('rating')) == '1.0-4.5' ? 'selected' : '' }}>1.0 - 1.5</option>
+                                
                             </select>
                         </div>
 
@@ -76,7 +78,6 @@
                                 <option value="50001" {{ old('viewers', request('viewers')) == '50001' ? 'selected' : '' }}>> 50.000</option>
                             </select>
                         </div>
-
 
                         <!-- Bahasa -->
                         <div>

@@ -99,33 +99,45 @@ class CourseController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'judul' => 'required|string',
-            'kategori' => 'required|string',
-            'link' => 'required|url',
-            'tipe' => 'nullable|string',
-            'bahasa' => 'nullable|string',
-            'level' => 'nullable|string',
-            'rating' => 'nullable|numeric',
-            'harga' => 'nullable|numeric',
-            'jumlah_viewers' => 'nullable|integer',
-            'durasi' => 'nullable|string',
-            'platform' => 'nullable|string',
-            'deskripsi' => 'nullable|string',
-        ]);
+{
+    // Validasi input
+    $validated = $request->validate([
+        'judul' => 'required|string',
+        'kategori' => 'required|string',
+        'link' => 'required|url',
+        'tipe' => 'nullable|string',
+        'bahasa' => 'nullable|string',
+        'level' => 'nullable|string',
+        'rating' => 'nullable|numeric',
+        'harga' => 'nullable|numeric',
+        'jumlah_viewers' => 'nullable|integer',
+        'durasi' => 'nullable|string',
+        'platform' => 'nullable|string',
+        'deskripsi' => 'nullable|string',
+    ]);
 
-        try {
-            Online_course::create($validated);
+    try {
+        // Tampilkan log isi data yang akan disimpan
+        Log::info('Data course yang akan disimpan:', $validated);
 
-            return redirect()->route('course.index')
-                ->with('success', 'Data course berhasil ditambahkan!');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
-                ->withInput();
-        }
+        // Simpan data ke database
+        $course = Online_course::create($validated);
+
+        // Cek hasil simpan (debug tambahan)
+        Log::info('Course berhasil disimpan dengan ID: ' . $course->id_online_course);
+
+        return redirect()->route('course.index')
+            ->with('success', 'Data course berhasil ditambahkan!');
+    } catch (\Exception $e) {
+        // Tampilkan log error
+        Log::error('Gagal menyimpan course: ' . $e->getMessage());
+
+        return redirect()->back()
+            ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
+            ->withInput();
     }
+}
+
 
     public function edit($id)
     {

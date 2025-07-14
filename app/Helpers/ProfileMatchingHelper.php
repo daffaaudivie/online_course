@@ -13,18 +13,20 @@ class ProfileMatchingHelper
     }
 
     /**
-     * Konversi tipe course ke nilai aktual sesuai jarak preferensi.
+     * Konversi tipe course ke nilai aktual sesuai preferensi.
      */
     public static function convertTipe($tipe, $preferensi): int
     {
-        $urutan = [
-            'specialization',
-            'professional certificate',
-            'project',
-            'free',
-        ];
+        // Jika tidak ada preferensi (default), return 1
+        if (empty($preferensi)) {
+            return 1;
+        }
 
-        return self::preferensiToNilai($tipe, $preferensi, $urutan, 3);
+        // Jika tipe sama dengan preferensi, return 5
+        return strtolower($tipe) === strtolower($preferensi) ? 3 : 1;
+
+        // Jika berbeda, return 1
+        return 1;
     }
 
     /**
@@ -32,7 +34,7 @@ class ProfileMatchingHelper
      */
     public static function convertBahasa($bahasa, $preferensi): int
     {
-        return strtolower($bahasa) === strtolower($preferensi) ? 3 : 2;
+        return strtolower($bahasa) === strtolower($preferensi) ? 3 : 1;
     }
 
     /**
@@ -40,8 +42,18 @@ class ProfileMatchingHelper
      */
     public static function convertLevel($level, $preferensi): int
     {
-        $urutan = ['pemula', 'menengah', 'lanjutan'];
-        return self::preferensiToNilai($level, $preferensi, $urutan, 3);
+        // Jika tidak ada preferensi (default), return 1
+        if (empty($preferensi)) {
+            return 1;
+        }
+
+        // Jika level sama dengan preferensi, return 5
+        if (strtolower($level) === strtolower($preferensi)) {
+            return 5;
+        }
+
+        // Jika berbeda, return 1
+        return 1;
     }
 
     /**
@@ -49,30 +61,18 @@ class ProfileMatchingHelper
      */
     public static function convertPlatform($platform, $preferensi): int
     {
-        $urutan = ['coursera', 'udemy', 'edx', 'dicoding'];
-        return self::preferensiToNilai($platform, $preferensi, $urutan, 3);
-    }
+        // Jika tidak ada preferensi (default), return 1
+        if (empty($preferensi)) {
+            return 1;
+        }
 
-    /**
-     * Generalized preferensi -> nilai aktual (skala ideal: 3).
-     */
-    private static function preferensiToNilai($value, $preferensi, $urutan, int $idealSkor = 3): int
-    {
-        $v = strtolower($value);
-        $p = strtolower($preferensi);
+        // Jika platform sama dengan preferensi, return 5
+        if (strtolower($platform) === strtolower($preferensi)) {
+            return 5;
+        }
 
-        $vi = array_search($v, $urutan);
-        $pi = array_search($p, $urutan);
-
-        if ($vi === false || $pi === false) return 1;
-
-        $selisih = abs($vi - $pi);
-
-        return match (true) {
-            $selisih === 0 => $idealSkor,
-            $selisih === 1 => $idealSkor - 1,
-            default => $idealSkor - 2
-        };
+        // Jika berbeda, return 1
+        return 1;
     }
 
     /**
@@ -89,23 +89,22 @@ class ProfileMatchingHelper
      */
     public static function convertRatingToActual($ratingCourse, $preferensiRange): int
     {
-    if (str_contains($preferensiRange, '-')) {
-        [$min, $max] = explode('-', $preferensiRange);
-        $min = (float) $min;
-        $max = (float) $max;
+        if (str_contains($preferensiRange, '-')) {
+            [$min, $max] = explode('-', $preferensiRange);
+            $min = (float) $min;
+            $max = (float) $max;
 
-        if ($ratingCourse >= $min && $ratingCourse <= $max) {
-            return 5; // sesuai
-        } elseif (abs($ratingCourse - $min) <= 0.2 || abs($ratingCourse - $max) <= 0.2) {
-            return 4; // mendekati
-        } else {
-            return 3; // tidak cocok
+            if ($ratingCourse >= $min && $ratingCourse <= $max) {
+                return 5; // sesuai
+            } elseif (abs($ratingCourse - $min) <= 0.2 || abs($ratingCourse - $max) <= 0.2) {
+                return 3; // mendekati
+            } else {
+                return 1; // tidak cocok
+            }
         }
-    }
 
-    return 3;
+        return 3;
     }
-
 
     /**
      * Konversi jumlah viewers ke bobot.
@@ -138,45 +137,114 @@ class ProfileMatchingHelper
         }
     }
 
-
     public static function convertHargaToActual($hargaCourse, $preferensiHarga): int
     {
-        $selisih = abs($hargaCourse - $preferensiHarga);
-
-        if ($selisih == 0) {
-            return 4; // sesuai nilai ideal
-        } elseif ($selisih <= 250000) {
-            return 3;
-        } elseif ($selisih <= 750000) {
-            return 2;
-        } else {
+        // Jika tidak ada preferensi (default), return 1
+        if (empty($preferensiHarga)) {
             return 1;
         }
-}
+
+        $preferensi = (int) $preferensiHarga;
+
+        // Logika berdasarkan kategori harga dari form
+        switch ($preferensi) {
+            case 0:
+                // Course Gratis - hanya cocok jika harga course = 0
+                return $hargaCourse == 0 ? 4 : 1;
+                
+            case 100000:
+                // < Rp 100.000 - cocok jika harga course < 100.000
+                if ($hargaCourse < 100000) {
+                    return 4;
+                } elseif ($hargaCourse <= 150000) {
+                    return 2; // sedikit di atas range
+                } else {
+                    return 1;
+                }
+                
+            case 500000:
+                // < Rp 500.000 - cocok jika harga course < 500.000
+                if ($hargaCourse < 500000) {
+                    return 4;
+                } elseif ($hargaCourse <= 1000000) {
+                    return 2; //
+                } else {
+                    return 1;
+                }
+                
+            case 1000000:
+                // < Rp 1.000.000 - cocok jika harga course < 1.000.000
+                if ($hargaCourse < 1000000) {
+                    return 4;
+                } elseif ($hargaCourse >= 1500000) {
+                    return 2; // sedikit di atas range
+                } else {
+                    return 1;
+                }
+             case 1000001:
+                // > Rp 1.000.000
+                if ($hargaCourse > 1000000) {
+                    return 4; // sesuai preferensi premium
+                } elseif ($hargaCourse >= 750000) {
+                    return 2; // mendekati range premium
+                } else {
+                    return 1; // terlalu murah untuk preferensi premium
+                }
+            default:
+                return 1;
+        }
+    }
 
     public static function normalizeDurasi($durasi): string
-{
-    $angka = (int) filter_var($durasi, FILTER_SANITIZE_NUMBER_INT);
+    {
+        $durasi = strtolower(trim($durasi));
+        
+        // Ekstrak angka dari string
+        $angka = (int) filter_var($durasi, FILTER_SANITIZE_NUMBER_INT);
 
-    if ($angka === 0) {
-        return '< 1 bulan';
-    } elseif ($angka <= 6) {
-        return '1-6 bulan';
-    } else {
-        return '> 6 bulan';
+        // Jika mengandung "week" atau "hour", langsung kategorikan sebagai < 1 bulan
+        if (str_contains($durasi, 'weeks') || str_contains($durasi, 'hours') || 
+            str_contains($durasi, 'minggu') || str_contains($durasi, 'jam')) {
+            return '< 1 bulan';
+        }
+
+        // Jika mengandung "month" atau "bulan"
+        if (str_contains($durasi, 'month') || str_contains($durasi, 'bulan')) {
+            if ($angka === 0 || $angka === 1) {
+                return '< 1 bulan';
+            } elseif ($angka <= 6) {
+                return '1-6 bulan';
+            } else {
+                return '> 6 bulan';
+            }
+        }
+
+        // Fallback untuk angka tanpa unit (asumsi bulan)
+        if ($angka === 0) {
+            return '< 1 bulan';
+        } elseif ($angka <= 6) {
+            return '1-6 bulan';
+        } else {
+            return '> 6 bulan';
+        }
     }
-}
 
+    public static function convertDurasi($durasi, $preferensi = null): int
+    {
+        // Jika tidak ada preferensi (default), return 1
+        if (empty($preferensi)) {
+            return 1;
+        }
 
-    public static function convertDurasi($durasi): int
-        {
-            return match (strtolower(trim($durasi))) {
-            '< 1 bulan' => 2,
-            '1-6 bulan' => 3,
-            '> 6 bulan' => 4,
-            default => 3,
-        };
+        // Jika durasi sama dengan preferensi, return 5
+        if (strtolower(trim($durasi)) === strtolower(trim($preferensi))) {
+            return 5;
+        }
+
+        // Jika berbeda, return 1
+        return 1;
     }
+
     public static function convertGapToBobot($gap): float
     {
         return match ($gap) {

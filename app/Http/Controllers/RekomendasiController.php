@@ -50,7 +50,7 @@ class RekomendasiController extends Controller
                 ProfileMatchingHelper::convertBahasa($course->bahasa, $preferensi['bahasa']),
                 ProfileMatchingHelper::convertTipe($course->tipe, $preferensi['tipe']),
                 ProfileMatchingHelper::convertLevel($course->level, $preferensi['level']),
-                ProfileMatchingHelper::convertDurasi(ProfileMatchingHelper::normalizeDurasi($course->durasi)),
+                ProfileMatchingHelper::convertDurasi(ProfileMatchingHelper::normalizeDurasi($course->durasi), $preferensi['durasi']),
                 ProfileMatchingHelper::convertPlatform($course->platform, $preferensi['platform']),
             ];
 
@@ -94,7 +94,7 @@ class RekomendasiController extends Controller
                 'jumlah_viewers' => $course->jumlah_viewers,
                 'durasi' => $course->durasi,
                 'platform' => $course->platform,
-                'skor' => round($totalSkor, 4),
+                'skor' => round($totalSkor, 5),
             ];
         }
 
@@ -142,7 +142,7 @@ class RekomendasiController extends Controller
             ]);
         }
 
-        session()->forget(['rekomendasi_result', 'rekomendasi_filter']);
+        // session()->forget(['rekomendasi_result', 'rekomendasi_filter']);
 
         return redirect()->back()->with('success', 'Rekomendasi berhasil disimpan.');
     }

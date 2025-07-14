@@ -7,18 +7,273 @@
             <h2 class="text-2xl font-semibold text-gray-800 mb-6">Detail Rekomendasi</h2>
             
             <!-- Preferensi Section -->
-            <p class="text-sm text-gray-600 mb-4">Preferensi yang digunakan:</p>
-    <div class="bg-gray-50 border rounded p-4 mb-6">
-        <pre class="text-sm text-gray-800">{{ json_encode(json_decode($history->filter), JSON_PRETTY_PRINT) }}</pre>
-    </div>
+<div class="mb-6">
+    <div class="flex items-center mb-4">
+        <svg class="w-5 h-5 mr-2 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+        </svg>
+        <h3 class="text-lg font-semibold text-slate-800">Preferensi yang Digunakan</h3>
+    </div>
+    
+    <div class="bg-gradient-to-br from-slate-50 to-gray-50 border-2 border-slate-200 rounded-xl p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center">
+                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                <span class="text-sm font-medium text-slate-700">Filter Aktif</span>
+            </div>
+            <button onclick="togglePreferences()" 
+                    class="flex items-center px-3 py-1 text-xs font-medium text-slate-600 bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors duration-200"
+                    id="toggleButton">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+                Tampilkan Detail
+            </button>
+        </div>
+        
+        <!-- Compact View -->
+        <div id="compactView" class="space-y-3">
+            @php
+                $preferences = json_decode($history->filter, true);
+                $displayItems = [];
+                
+                foreach ($preferences as $key => $value) {
+                    if (!empty($value) && $value !== null && $value !== [] && $value !== '') {
+                        $displayItems[] = [
+                            'key' => $key,
+                            'value' => $value
+                        ];
+                    }
+                }
+            @endphp
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach($displayItems as $item)
+                    <div class="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow duration-200">
+                        <div class="flex items-center mb-2">
+                            @switch($item['key'])
+                                @case('kategori')
+                                    <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                    </svg>
+                                    @break
+                                @case('platform')
+                                    <svg class="w-4 h-4 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                    @break
+                                @case('bahasa')
+                                    <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                                    </svg>
+                                    @break
+                                @case('level')
+                                    <svg class="w-4 h-4 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                    @break
+                                @case('tipe')
+                                    <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                    </svg>
+                                    @break
+                                @case('min_rating')
+                                    <svg class="w-4 h-4 mr-2 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                    </svg>
+                                    @break
+                                @default
+                                    <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                            @endswitch
+                            <span class="text-sm font-medium text-slate-700 capitalize">{{ str_replace('_', ' ', $item['key']) }}</span>
+                        </div>
+                        <div class="text-sm text-slate-600">
+                            @if(is_array($item['value']))
+                                <div class="flex flex-wrap gap-1">
+                                    @foreach($item['value'] as $val)
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-full">
+                                            {{ $val }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            @else
+                                <span class="inline-flex px-2 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-full">
+                                    {{ $item['value'] }}
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        
+        <!-- Detail View (Hidden by default) -->
+        <div id="detailView" class="hidden">
+            <div class="bg-slate-900 rounded-lg p-4 overflow-x-auto">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-green-400 rounded-full mr-2"></div>
+                        <span class="text-sm font-medium text-green-400">JSON Format</span>
+                    </div>
+                    <button onclick="copyToClipboard()" 
+                            class="flex items-center px-3 py-1 text-xs font-medium text-slate-300 bg-slate-800 rounded-lg border border-slate-600 hover:bg-slate-700 transition-colors duration-200"
+                            id="copyButton">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        </svg>
+                        Copy
+                    </button>
+                </div>
+                <pre class="text-sm text-green-400 font-mono leading-relaxed whitespace-pre-wrap" id="jsonContent">{{ json_encode(json_decode($history->filter), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let isDetailViewVisible = false;
+
+function togglePreferences() {
+    const compactView = document.getElementById('compactView');
+    const detailView = document.getElementById('detailView');
+    const toggleButton = document.getElementById('toggleButton');
+    
+    if (isDetailViewVisible) {
+        // Show compact view
+        compactView.classList.remove('hidden');
+        detailView.classList.add('hidden');
+        toggleButton.innerHTML = `
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+            Tampilkan Detail
+        `;
+        isDetailViewVisible = false;
+    } else {
+        // Show detail view
+        compactView.classList.add('hidden');
+        detailView.classList.remove('hidden');
+        toggleButton.innerHTML = `
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+            </svg>
+            Sembunyikan Detail
+        `;
+        isDetailViewVisible = true;
+    }
+}
+
+function copyToClipboard() {
+    const jsonContent = document.getElementById('jsonContent').textContent;
+    const copyButton = document.getElementById('copyButton');
+    
+    navigator.clipboard.writeText(jsonContent).then(() => {
+        // Show success feedback
+        const originalContent = copyButton.innerHTML;
+        copyButton.innerHTML = `
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Copied!
+        `;
+        copyButton.classList.add('bg-green-600', 'text-white');
+        copyButton.classList.remove('bg-slate-800', 'text-slate-300');
+        
+        setTimeout(() => {
+            copyButton.innerHTML = originalContent;
+            copyButton.classList.remove('bg-green-600', 'text-white');
+            copyButton.classList.add('bg-slate-800', 'text-slate-300');
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+    });
+}
+
+// Add syntax highlighting effect
+document.addEventListener('DOMContentLoaded', function() {
+    const jsonContent = document.getElementById('jsonContent');
+    if (jsonContent) {
+        let content = jsonContent.textContent;
+        
+        // Simple syntax highlighting
+        content = content
+            .replace(/(".*?")/g, '<span class="text-blue-300">$1</span>')
+            .replace(/(\d+)/g, '<span class="text-yellow-300">$1</span>')
+            .replace(/(true|false|null)/g, '<span class="text-purple-300">$1</span>')
+            .replace(/([{}[\],])/g, '<span class="text-slate-400">$1</span>');
+        
+        jsonContent.innerHTML = content;
+    }
+});
+</script>
+
+<style>
+/* Custom scrollbar for JSON view */
+#detailView pre::-webkit-scrollbar {
+    height: 8px;
+}
+
+#detailView pre::-webkit-scrollbar-track {
+    background: #1e293b;
+    border-radius: 4px;
+}
+
+#detailView pre::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 4px;
+}
+
+#detailView pre::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Animation for toggle */
+#compactView, #detailView {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover effects for preference cards */
+.preference-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.preference-card:hover {
+    transform: translateY(-1px);
+}
+</style>
 
             <!-- Hasil Rekomendasi -->
-            <div class="overflow-hidden shadow-lg rounded-lg">
-                <table class="min-w-full bg-white">
+
+                <div class="overflow-hidden shadow-lg rounded-lg">
+                    <!-- Tombol Print & Export -->
+                                            
+                        <div class="flex justify-end p-4 space-x-3">
+                            <!-- Tombol Export Excel -->
+                            <a href="{{ route('rekomendasi.export.excel', ['id' => $history->id]) }}"
+                                class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                                Export Excel
+                            </a>
+
+                            <!-- Tombol Print PDF -->
+                            <a href="{{ route('rekomendasi.export', ['id' => $history->id]) }}"
+                                target="_blank"
+                                class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors duration-200">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                Print PDF
+                            </a>
+                        </div>
+                                        <table class="min-w-full bg-white">
                     <thead class="bg-gradient-to-r from-slate-700 to-slate-800 text-white">
                         <tr>
                             <th class="px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">No</th>
-                            <th class="px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">Judul</th>
+                            <th class="avpx-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">Judul</th>
                             <th class="px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">Kategori</th>
                             <th class="px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">Skor</th>
                             <th class="px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider">Link</th>
@@ -191,16 +446,6 @@ function openModal(courseId) {
                     <div class="bg-gradient-to-r from-slate-50 to-gray-50 p-4 rounded-lg">
                         <label class="block text-sm font-semibold text-slate-700 mb-2 flex items-center">
                             <svg class="w-4 h-4 mr-2 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2h4a1 1 0 110 2h-1v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6H3a1 1 0 110-2h4z"></path>
-                            </svg>
-                            Judul Course
-                        </label>
-                        <p class="text-sm text-slate-900 font-medium">${course.judul}</p>
-                    </div>
-                    
-                    <div class="bg-gradient-to-r from-slate-50 to-gray-50 p-4 rounded-lg">
-                        <label class="block text-sm font-semibold text-slate-700 mb-2 flex items-center">
-                            <svg class="w-4 h-4 mr-2 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
                             </svg>
                             Kategori
@@ -209,6 +454,18 @@ function openModal(courseId) {
                             ${course.kategori}
                         </span>
                     </div>
+
+                     ${course.deskripsi ? `
+                    <div class="bg-gradient-to-r from-slate-50 to-gray-50 p-4 rounded-lg">
+                        <label class="block text-sm font-semibold text-slate-700 mb-2 flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Deskripsi
+                        </label>
+                        <p class="text-sm text-slate-900 leading-relaxed">${course.deskripsi}</p>
+                    </div>
+                    ` : ''}
                     
                     ${course.tipe ? `
                     <div class="bg-gradient-to-r from-slate-50 to-gray-50 p-4 rounded-lg">
@@ -299,17 +556,7 @@ function openModal(courseId) {
                     </div>
                     ` : ''}
                     
-                    ${course.deskripsi ? `
-                    <div class="bg-gradient-to-r from-slate-50 to-gray-50 p-4 rounded-lg">
-                        <label class="block text-sm font-semibold text-slate-700 mb-2 flex items-center">
-                            <svg class="w-4 h-4 mr-2 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            Deskripsi
-                        </label>
-                        <p class="text-sm text-slate-900 leading-relaxed">${course.deskripsi}</p>
-                    </div>
-                    ` : ''}
+                   
                     
                     <div class="bg-gradient-to-r from-slate-50 to-gray-50 p-4 rounded-lg">
                         <label class="block text-sm font-semibold text-slate-700 mb-3 flex items-center">
@@ -469,5 +716,4 @@ function showFavoriteMessage(isFavorited, courseTitle) {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 </style>
-
 @endsection

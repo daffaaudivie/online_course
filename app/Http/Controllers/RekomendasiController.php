@@ -6,6 +6,9 @@ use App\Helpers\ProfileMatchingHelper;
 use App\Models\Online_course;
 use App\Models\RekomendasiHistory;
 use App\Models\RekomendasiDetail;
+use App\Exports\DetailRekomendasiExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -180,4 +183,46 @@ class RekomendasiController extends Controller
 
         return redirect()->route('rekomendasi.riwayat')->with('success', 'Riwayat berhasil dihapus.');
     }
+
+    public function exportPDF($id)
+{
+    $history = RekomendasiHistory::with('details.course')->findOrFail($id);
+
+    $pdf = Pdf::loadView('exports.rekomendasi_pdf', compact('history'))
+              ->setPaper('a4', 'portrait');   // atur ukuran kertas bila perlu
+
+    return $pdf->download('rekomendasi-'.now()->format('Ymd_His').'.pdf');
+}
+public function export(Request $request, $id)
+{
+    $history = RekomendasiHistory::with('details.course')->findOrFail($id);
+
+    // Jika query ?download=pdf ada → unduh PDF
+    if ($request->query('download') === 'pdf') {
+        return Pdf::loadView('exports.rekomendasi_pdf', ['history' => $history])
+                  ->setPaper('a4', 'portrait')
+                  ->download('rekomendasi-' . now()->format('Ymd_His') . '.pdf');
+    }
+
+    // Tanpa query → tampilkan pratinjau HTML
+    return view('exports.rekomendasi_pdf', [
+        'history'    => $history,
+        'isPreview'  => true      // flag agar tombol muncul hanya di preview
+    ]);
+}
+public function exportPreview($id)
+{
+    $history = RekomendasiHistory::with('details.course')->findOrFail($id);
+    return view('exports.rekomendasi_pdf', compact('history'));
+}
+public function exportExcel($id)
+{
+    $history = RekomendasiHistory::with('details.course')->findOrFail($id);
+
+    $courses = $history->details->map(function ($detail) {
+        return $detail->course;
+    });
+
+    return Excel::download(new DetailRekomendasiExport($courses), 'rekomendasi-course.xlsx');
+}
 }

@@ -18,11 +18,23 @@ use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
 {
-    public function index()
-    {
-        $courses = Online_course::paginate(10);
-        return view('admin.course.course', compact('courses'));
+    public function index(Request $request)
+{
+    $query = Online_course::query(); // Inisialisasi query builder
+
+    if ($request->has('search') && $request->search != '') {
+        $searchTerm = $request->search;
+
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('judul', 'like', '%' . $searchTerm . '%')
+              ->orWhere('kategori', 'like', '%' . $searchTerm . '%');
+        });
     }
+
+    $courses = $query->paginate(10);
+
+    return view('admin.course.course', compact('courses'));
+}
 
     public function dashboard()
 {
@@ -64,11 +76,22 @@ class CourseController extends Controller
     ));
 }
 
-    public function userView()
-    {
-        $courses = Online_course::paginate(10);
-        return view('user.course.course', compact('courses'));
+    public function userView(Request $request)
+{
+    $query = Online_course::query(); // inisialisasi query
+
+    if ($request->has('search') && $request->search != '') {
+        $searchTerm = $request->search;
+        $query->where(function($q) use ($searchTerm) {
+            $q->where('judul', 'like', '%' . $searchTerm . '%')
+              ->orWhere('kategori', 'like', '%' . $searchTerm . '%');
+        });
     }
+
+    $courses = $query->paginate(10);
+
+    return view('user.course.course', compact('courses'));
+}
 
     public function create()
     {

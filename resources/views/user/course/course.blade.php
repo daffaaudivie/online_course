@@ -6,6 +6,49 @@
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
             <h2 class="text-2xl font-semibold text-gray-800 mb-6">Kursus Tersedia</h2>
 
+            <!-- Search Bar -->
+            <div class="mb-6">
+                <form method="GET" action="{{ request()->url() }}" class="flex items-center space-x-4">
+                    <div class="relative flex-1 max-w-md">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text" 
+                               name="search" 
+                               value="{{ request('search') }}"
+                               placeholder="Cari kursus berdasarkan judul atau kategori..." 
+                               class="block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-colors duration-200">
+                    </div>
+                    
+                    <button type="submit" 
+                            class="inline-flex items-center px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        Cari
+                    </button>
+                    
+                    @if(request('search'))
+                    <a href="{{ request()->url() }}" 
+                       class="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        Reset
+                    </a>
+                    @endif
+                </form>
+                
+                @if(request('search'))
+                <div class="mt-3 text-sm text-gray-600">
+                    Hasil pencarian untuk: <span class="font-semibold text-gray-800">"{{ request('search') }}"</span>
+                    <span class="text-gray-500">({{ $courses->total() ?? count($courses) }} hasil ditemukan)</span>
+                </div>
+                @endif
+            </div>
+
             <div class="shadow-lg rounded-lg">
                 <table class="min-w-full bg-white">
                     <thead class="bg-gradient-to-r from-slate-700 to-slate-800 text-white">
@@ -18,19 +61,27 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        @foreach ($courses as $index => $course)
+                        @forelse ($courses as $index => $course)
                         <tr class="hover:bg-gray-50 transition-colors duration-200 {{ $index % 2 == 0 ? 'bg-white' : 'bg-gray-50' }}">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 {{ $index + 1 }}
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-900">
                                 <div class="font-medium truncate max-w-xs" title="{{ $course->judul }}">
-                                    {{ $course->judul }}
+                                    @if(request('search'))
+                                        {!! str_ireplace(request('search'), '<mark class="bg-yellow-200 px-1 rounded">' . request('search') . '</mark>', $course->judul) !!}
+                                    @else
+                                        {{ $course->judul }}
+                                    @endif
                                 </div>
                             </td>
                             <td class="px-6 py-4 text-center align-middle whitespace-nowrap">
                                 <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-slate-100 text-slate-700">
-                                    {{ $course->kategori }}
+                                    @if(request('search'))
+                                        {!! str_ireplace(request('search'), '<mark class="bg-yellow-200 px-1 rounded">' . request('search') . '</mark>', $course->kategori) !!}
+                                    @else
+                                        {{ $course->kategori }}
+                                    @endif
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-center align-middle whitespace-nowrap text-sm">
@@ -102,7 +153,24 @@
                                 </div>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                                <div class="flex flex-col items-center justify-center space-y-3">
+                                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.5-.81-6.213-2.16m11.213-4.498a7.962 7.962 0 01-2.268-.498M12 3a9 9 0 100 18 9 9 0 000-18z"></path>
+                                    </svg>
+                                    @if(request('search'))
+                                        <p class="text-lg font-medium">Tidak ada kursus yang ditemukan</p>
+                                        <p class="text-sm">Coba gunakan kata kunci yang berbeda atau <a href="{{ request()->url() }}" class="text-slate-600 hover:text-slate-800 underline">reset pencarian</a></p>
+                                    @else
+                                        <p class="text-lg font-medium">Belum ada kursus tersedia</p>
+                                        <p class="text-sm">Kursus akan ditampilkan di sini ketika sudah tersedia</p>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -110,7 +178,7 @@
             <!-- Pagination jika ada -->
             @if(method_exists($courses, 'links'))
             <div class="mt-6">
-                {{ $courses->links() }}
+                {{ $courses->appends(request()->query())->links() }}
             </div>
             @endif
         </div>

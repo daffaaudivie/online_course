@@ -37,6 +37,13 @@ Route::middleware(['auth'])->prefix('user')->group(function () {
     Route::post('/rekomendasi/simpan', [RekomendasiController::class, 'simpan'])->name('rekomendasi.simpan');
     Route::delete('/rekomendasi/riwayat/{id}', [RekomendasiController::class, 'riwayatDelete'])->name('rekomendasi.riwayat.delete'); 
      Route::get('/kriteria', [KriteriaController::class, 'indexUser'])->name('kriteria.indexUser');
+     Route::get('/rekomendasi/{id}/export-pdf', [RekomendasiController::class, 'exportPDF'])->name('rekomendasi.export.pdf');
+     Route::get('/user/rekomendasi/{id}/export', [RekomendasiController::class, 'export'])
+     ->name('rekomendasi.export');
+     Route::get('/rekomendasi/{id}/export', [RekomendasiController::class, 'exportPreview'])->name('rekomendasi.export');
+     Route::get('/user/rekomendasi/{id}/export-excel', [App\Http\Controllers\RekomendasiController::class, 'exportExcel'])->name('rekomendasi.export.excel');
+
+
 
 
 });

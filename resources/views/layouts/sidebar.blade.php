@@ -29,14 +29,14 @@
             </a>
 
             <!-- Data Kriteria Menu -->
-            <a href="{{ route('kriteria.indexUser') }}"
+            <!-- <a href="{{ route('kriteria.indexUser') }}"
                class="flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-colors duration-200 {{ request()->routeIs('admin.kriteria.*') ? 'bg-gray-700 text-white' : '' }}">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v6a2 2 0 002 2h6a2 2 0 002-2V7a2 2 0 00-2-2H9z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9h6m-6 4h6m2 5H7a2 2 0 01-2-2V7a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
                 <span class="font-medium">Data Kriteria</span>
-            </a>
+            </a> -->
 
             <!-- Rekomendasi Course Menu -->
             <a href="{{ route('rekomendasi.form') }}"

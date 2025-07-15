@@ -20,7 +20,7 @@ class CourseController extends Controller
 {
     public function index(Request $request)
 {
-    $query = Online_course::query(); // Inisialisasi query builder
+    $query = OnlineCourse::query(); // Inisialisasi query builder
 
     if ($request->has('search') && $request->search != '') {
         $searchTerm = $request->search;
@@ -78,7 +78,7 @@ class CourseController extends Controller
 
     public function userView(Request $request)
 {
-    $query = Online_course::query(); // inisialisasi query
+    $query = OnlineCourse::query(); // inisialisasi query
 
     if ($request->has('search') && $request->search != '') {
         $searchTerm = $request->search;
@@ -121,7 +121,7 @@ class CourseController extends Controller
         Log::info('Data course yang akan disimpan:', $validated);
 
         // Simpan data ke database
-        $course = Online_course::create($validated);
+        $course = OnlineCourse::create($validated);
 
         // Cek hasil simpan (debug tambahan)
         Log::info('Course berhasil disimpan dengan ID: ' . $course->id_online_course);
@@ -141,7 +141,7 @@ class CourseController extends Controller
 
     public function edit($id)
     {
-        $course = Online_course::findOrFail($id);
+        $course = OnlineCourse::findOrFail($id);
         return view('admin.course.edit_course', compact('course'));
     }
 
@@ -162,7 +162,7 @@ class CourseController extends Controller
             'deskripsi' => 'nullable|string',
         ]);
 
-        $course = Online_course::findOrFail($id);
+        $course = OnlineCourse::findOrFail($id);
         $course->update($validated);
 
         return redirect()->route('course.index')->with('success', 'Course berhasil diperbarui!');
@@ -170,7 +170,7 @@ class CourseController extends Controller
 
     public function destroy($id_online_course)
     {
-        $course = Online_course::findOrFail($id_online_course);
+        $course = OnlineCourse::findOrFail($id_online_course);
         $course->delete();
 
         return redirect()->route('course.index')->with('success', 'Course berhasil dihapus!');
@@ -219,7 +219,7 @@ class CourseController extends Controller
             Log::info("Debug info: " . json_encode($import->getDebugInfo()));
             
             // Cek data di database
-            $totalRecords = Online_course::count();  // Perbaiki nama tabel
+            $totalRecords = OnlineCourse::count();  // Perbaiki nama tabel
             Log::info("Total records in database: " . $totalRecords);
 
             // Return dengan redirect untuk web form

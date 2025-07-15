@@ -26,6 +26,6 @@ class RekomendasiDetail extends Model
 
     public function course()
     {
-        return $this->belongsTo(Online_course::class, 'online_course_id');
+        return $this->belongsTo(OnlineCourse::class, 'online_course_id');
     }
 }

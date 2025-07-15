@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Online_Course;
+use App\Models\OnlineCourse;
 
 class User extends Authenticatable
 {
@@ -62,6 +62,6 @@ class User extends Authenticatable
 
     public function favorites()
     {
-        return $this->belongsToMany(Online_Course::class, 'favorites', 'user_id', 'id_online_course');
+        return $this->belongsToMany(OnlineCourse::class, 'favorites', 'user_id', 'id_online_course');
 }
 }

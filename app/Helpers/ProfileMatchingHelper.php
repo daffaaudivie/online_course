@@ -17,16 +17,13 @@ class ProfileMatchingHelper
      */
     public static function convertTipe($tipe, $preferensi): int
     {
-        // Jika tidak ada preferensi (default), return 1
+        // Jika tidak ada preferensi (default), return 3 (nilai ideal)
         if (empty($preferensi)) {
-            return 1;
+            return 3;
         }
 
-        // Jika tipe sama dengan preferensi, return 5
+        // Jika tipe sama dengan preferensi, return 3 (sesuai nilai ideal)
         return strtolower($tipe) === strtolower($preferensi) ? 3 : 1;
-
-        // Jika berbeda, return 1
-        return 1;
     }
 
     /**
@@ -42,18 +39,13 @@ class ProfileMatchingHelper
      */
     public static function convertLevel($level, $preferensi): int
     {
-        // Jika tidak ada preferensi (default), return 1
+        // Jika tidak ada preferensi (default), return 3 (nilai ideal)
         if (empty($preferensi)) {
-            return 1;
+            return 3;
         }
 
-        // Jika level sama dengan preferensi, return 5
-        if (strtolower($level) === strtolower($preferensi)) {
-            return 5;
-        }
-
-        // Jika berbeda, return 1
-        return 1;
+        // Jika level sama dengan preferensi, return 3 (sesuai nilai ideal)
+        return strtolower($level) === strtolower($preferensi) ? 3 : 1;
     }
 
     /**
@@ -61,18 +53,13 @@ class ProfileMatchingHelper
      */
     public static function convertPlatform($platform, $preferensi): int
     {
-        // Jika tidak ada preferensi (default), return 1
+        // Jika tidak ada preferensi (default), return 3 (nilai ideal)
         if (empty($preferensi)) {
-            return 1;
+            return 3;
         }
 
-        // Jika platform sama dengan preferensi, return 5
-        if (strtolower($platform) === strtolower($preferensi)) {
-            return 5;
-        }
-
-        // Jika berbeda, return 1
-        return 1;
+        // Jika platform sama dengan preferensi, return 3 (sesuai nilai ideal)
+        return strtolower($platform) === strtolower($preferensi) ? 3 : 1;
     }
 
     /**
@@ -95,15 +82,15 @@ class ProfileMatchingHelper
             $max = (float) $max;
 
             if ($ratingCourse >= $min && $ratingCourse <= $max) {
-                return 5; // sesuai
+                return 5; // sesuai dengan nilai ideal
             } elseif (abs($ratingCourse - $min) <= 0.2 || abs($ratingCourse - $max) <= 0.2) {
-                return 3; // mendekati
+                return 4; // mendekati
             } else {
                 return 1; // tidak cocok
             }
         }
 
-        return 3;
+        return 3; // default jika format tidak dikenali
     }
 
     /**
@@ -117,7 +104,7 @@ class ProfileMatchingHelper
             $max = (int) $max;
 
             if ($viewersCourse >= $min && $viewersCourse <= $max) {
-                return 3; // sesuai preferensi
+                return 3; // sesuai dengan nilai ideal
             } elseif (abs($viewersCourse - $min) <= 5000 || abs($viewersCourse - $max) <= 5000) {
                 return 2; // agak dekat
             } else {
@@ -139,9 +126,9 @@ class ProfileMatchingHelper
 
     public static function convertHargaToActual($hargaCourse, $preferensiHarga): int
     {
-        // Jika tidak ada preferensi (default), return 1
+        // Jika tidak ada preferensi (default), return 4 (nilai ideal)
         if (empty($preferensiHarga)) {
-            return 1;
+            return 4;
         }
 
         $preferensi = (int) $preferensiHarga;
@@ -166,8 +153,8 @@ class ProfileMatchingHelper
                 // < Rp 500.000 - cocok jika harga course < 500.000
                 if ($hargaCourse < 500000) {
                     return 4;
-                } elseif ($hargaCourse <= 1000000) {
-                    return 2; //
+                } elseif ($hargaCourse <= 700000) {
+                    return 2; // sedikit di atas range
                 } else {
                     return 1;
                 }
@@ -176,12 +163,13 @@ class ProfileMatchingHelper
                 // < Rp 1.000.000 - cocok jika harga course < 1.000.000
                 if ($hargaCourse < 1000000) {
                     return 4;
-                } elseif ($hargaCourse >= 1500000) {
+                } elseif ($hargaCourse <= 1200000) {
                     return 2; // sedikit di atas range
                 } else {
                     return 1;
                 }
-             case 1000001:
+                
+            case 1000001:
                 // > Rp 1.000.000
                 if ($hargaCourse > 1000000) {
                     return 4; // sesuai preferensi premium
@@ -190,6 +178,7 @@ class ProfileMatchingHelper
                 } else {
                     return 1; // terlalu murah untuk preferensi premium
                 }
+                
             default:
                 return 1;
         }
@@ -231,18 +220,13 @@ class ProfileMatchingHelper
 
     public static function convertDurasi($durasi, $preferensi = null): int
     {
-        // Jika tidak ada preferensi (default), return 1
+        // Jika tidak ada preferensi (default), return 3 (nilai ideal)
         if (empty($preferensi)) {
-            return 1;
+            return 3;
         }
 
-        // Jika durasi sama dengan preferensi, return 5
-        if (strtolower(trim($durasi)) === strtolower(trim($preferensi))) {
-            return 5;
-        }
-
-        // Jika berbeda, return 1
-        return 1;
+        // Jika durasi sama dengan preferensi, return 3 (sesuai nilai ideal)
+        return strtolower(trim($durasi)) === strtolower(trim($preferensi)) ? 3 : 1;
     }
 
     public static function convertGapToBobot($gap): float
@@ -256,8 +240,31 @@ class ProfileMatchingHelper
             3 => 2.5,
             -3 => 2.0,
             4 => 1.5,
-            -4 => 1.0,
-            default => 1.0 // jika gap lebih dari ±4
+            -4 => 1.0, // jika gap lebih dari ±4
         };
+    }
+
+    /**
+     * Method untuk menghitung skor Profile Matching
+     * Menghindari double interpolation
+     */
+    public static function hitungSkor($nilaiAktual, $nilaiIdeal): float
+    {
+        $bobotInterpolasi = [];
+        
+        foreach ($nilaiAktual as $i => $nilai) {
+            $gap = $nilai - $nilaiIdeal[$i];
+            $bobot = self::convertGapToBobot($gap);
+            $bobotInterpolasi[] = $bobot;
+        }
+        
+        // CF (Core Factor) - 5 kriteria pertama
+        $cf = array_sum(array_slice($bobotInterpolasi, 0, 5)) / 5;
+        
+        // SF (Secondary Factor) - 4 kriteria terakhir  
+        $sf = array_sum(array_slice($bobotInterpolasi, 5, 4)) / 4;
+        
+        // Total skor dengan bobot 70% CF dan 30% SF
+        return (0.7 * $cf) + (0.3 * $sf);
     }
 }

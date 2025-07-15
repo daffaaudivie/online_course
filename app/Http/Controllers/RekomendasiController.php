@@ -12,6 +12,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class RekomendasiController extends Controller
 {
@@ -41,11 +42,12 @@ class RekomendasiController extends Controller
     $courses = OnlineCourse::all();
     $hasil = [];
 
-    // Nilai ideal yang konsisten dengan return values helper functions
+    // Nilai ideal sesuai urutan kriteria
     $nilaiIdeal = [5, 4, 5, 3, 3, 3, 3, 3, 3];
+    $labelKriteria = ['Kategori', 'Harga', 'Rating', 'Viewers', 'Bahasa', 'Tipe', 'Level', 'Durasi', 'Platform'];
 
     foreach ($courses as $course) {
-        // Hitung nilai aktual untuk setiap kriteria
+        // Konversi nilai aktual
         $nilaiAktual = [
             ProfileMatchingHelper::convertKategori($course->kategori, $preferensi['kategori']),
             ProfileMatchingHelper::convertHargaToActual($course->harga, $preferensi['harga']),
@@ -54,11 +56,32 @@ class RekomendasiController extends Controller
             ProfileMatchingHelper::convertBahasa($course->bahasa, $preferensi['bahasa']),
             ProfileMatchingHelper::convertTipe($course->tipe, $preferensi['tipe']),
             ProfileMatchingHelper::convertLevel($course->level, $preferensi['level']),
-            ProfileMatchingHelper::convertDurasi(ProfileMatchingHelper::normalizeDurasi($course->durasi), $preferensi['durasi']),
+            ProfileMatchingHelper::convertDurasi(
+                ProfileMatchingHelper::normalizeDurasi($course->durasi), 
+                $preferensi['durasi']
+            ),
             ProfileMatchingHelper::convertPlatform($course->platform, $preferensi['platform']),
         ];
 
-        // Hitung skor menggunakan helper method yang sudah diperbaiki
+        // === DEBUG LOGGING ===
+        Log::info("=== DEBUG COURSE: {$course->judul} ===");
+        Log::info("Data Mentah:", [
+            'kategori' => $course->kategori,
+            'harga' => $course->harga,
+            'rating' => $course->rating,
+            'viewers' => $course->jumlah_viewers,
+            'bahasa' => $course->bahasa,
+            'tipe' => $course->tipe,
+            'level' => $course->level,
+            'durasi' => $course->durasi,
+            'platform' => $course->platform,
+        ]);
+        foreach ($nilaiAktual as $i => $actual) {
+            $gap = $actual - $nilaiIdeal[$i];
+            Log::info("{$labelKriteria[$i]} | Aktual = {$actual} | Ideal = {$nilaiIdeal[$i]} | GAP = {$gap}");
+        }
+
+        // Hitung skor total
         $totalSkor = ProfileMatchingHelper::hitungSkor($nilaiAktual, $nilaiIdeal);
 
         $hasil[] = [
@@ -76,7 +99,6 @@ class RekomendasiController extends Controller
             'durasi' => $course->durasi,
             'platform' => $course->platform,
             'skor' => round($totalSkor, 5),
-            // Debug info - hapus setelah testing
             'nilai_aktual' => $nilaiAktual,
             'gap' => array_map(fn($i) => $nilaiAktual[$i] - $nilaiIdeal[$i], range(0, 8))
         ];
@@ -85,8 +107,10 @@ class RekomendasiController extends Controller
     $rekomendasi = collect($hasil)->sortByDesc('skor')->take(10)->values();
     $courses = $rekomendasi;
 
-    // Simpan sementara di session
-    session(['rekomendasi_result' => $rekomendasi, 'rekomendasi_filter' => $preferensi]);
+    session([
+        'rekomendasi_result' => $rekomendasi,
+        'rekomendasi_filter' => $preferensi
+    ]);
 
     $kategori = OnlineCourse::select('kategori')->distinct()->pluck('kategori');
     $tipe = OnlineCourse::select('tipe')->distinct()->pluck('tipe');
@@ -98,6 +122,7 @@ class RekomendasiController extends Controller
         'rekomendasi', 'kategori', 'tipe', 'bahasa', 'level', 'platform', 'courses'
     ));
 }
+
     public function simpan()
     {
         $rekomendasi = session('rekomendasi_result');

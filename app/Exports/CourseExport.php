@@ -18,46 +18,32 @@ class CourseExport implements FromArray, WithHeadings, WithStyles, WithColumnWid
     {
         return [
             [
-                'Pengenalan Data Science dengan Python',
-                'Kursus dasar untuk memahami konsep data science menggunakan bahasa pemrograman Python',
+                'Introduction to Data Science Specialization',
+                'Launch your career in data science. Gain foundational data science skills to prepare for a career or further advanced learning in data science. ',
                 'Data Science',
-                'Gratis',
+                '635179',
                 '4.5',
                 '15000',
-                'Indonesia',
+                'English',
                 'Specialization',
-                '0-3 Bulan',
-                'Pemula',
+                '5 Months',
+                'Beginner',
                 'Coursera',
-                'https://www.coursera.org/learn/python-data-science'
+                'https://www.coursera.org/specializations/introduction-data-science'
             ],
             [
-                'Machine Learning for Beginners',
-                'Pelajari dasar-dasar machine learning dan implementasinya',
-                'Machine Learning',
-                'Berbayar',
-                '4.8',
-                '25000',
-                'Inggris',
-                'Professional Certificate',
-                '4-6 Bulan',
-                'Menengah',
-                'edX',
-                'https://www.edx.org/course/machine-learning-beginners'
-            ],
-            [
-                'Web Development Bootcamp',
-                'Kursus lengkap pengembangan web dari dasar hingga mahir',
-                'Web Development',
-                'Berbayar',
+                'Data Engineering Foundations Specialization',
+                'Build the Foundation for a Data Engineering Career. Develop hands-on experience with Python, SQL, and Relational Databases and master the fundamentals of the Data Engineering ecosystem. ',
+                'Information Technology',
+                '798045',
                 '4.7',
-                '50000',
-                'Inggris',
-                'Guided Project',
-                '> 6 Bulan',
-                'Lanjutan',
-                'Udemy',
-                'https://www.udemy.com/course/web-development-bootcamp'
+                '922',
+                'English',
+                'Specialization',
+                '5 Months',
+                'Intermediate',
+                'Coursera',
+                'https://www.coursera.org/specializations/data-engineering-foundations'
             ]
         ];
     }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Online_course;
+use App\Models\OnlineCourse;
 use App\Models\RekomendasiHistory;
 use App\Models\Kriteria;
 use App\Models\Favorite;
@@ -41,7 +41,7 @@ class CourseController extends Controller
     $user = Auth::user();
 
     // Total course
-    $totalCourses = Online_course::count();
+    $totalCourses = OnlineCourse::count();
 
     // Total favorit user
     $favoriteCourses = Favorite::where('user_id', $user->id)->count();
@@ -61,7 +61,7 @@ class CourseController extends Controller
     $admin = Auth::guard('admin')->user(); // Perbaiki ini juga
 
     // Total course
-    $totalCourses = Online_course::count();
+    $totalCourses = OnlineCourse::count();
     $totalKriteria = Kriteria::count();
     $totalUsers = User::count();
 

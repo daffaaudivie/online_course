@@ -13,9 +13,22 @@ return new class extends Migration
     {
         Schema::create('rekomendasi_detail', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('rekomendasi_history_id')->constrained()->onDelete('cascade');
-            $table->unsignedBigInteger('online_course_id');
-            $table->float('skor');
+
+            // FK ke rekomendasi_history
+            $table->foreignId('rekomendasi_history_id')
+                  ->constrained('rekomendasi_history')
+                  ->onDelete('cascade');
+
+            // FK ke online_course
+            $table->foreignId('online_course_id')
+                  ->constrained('online_course')
+                  ->onDelete('cascade');
+
+            // skor rekomendasi
+            $table->double('skor', 8, 2);
+
+            // Optional: track waktu
+            $table->timestamps();
         });
     }
 
@@ -27,3 +40,4 @@ return new class extends Migration
         Schema::dropIfExists('rekomendasi_detail');
     }
 };
+

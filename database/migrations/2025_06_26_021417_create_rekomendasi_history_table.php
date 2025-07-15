@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,17 +12,21 @@ return new class extends Migration
     {
         Schema::create('rekomendasi_history', function (Blueprint $table) {
             $table->id();
-            $table->json('filter'); // simpan semua preferensi (kategori, harga, rating, dll)
-            $table->userid();
+            $table->unsignedBigInteger('user_id'); // ✅ FK ke users
+            $table->json('filter');
             $table->timestamps();
+
+            // Tambahkan relasi foreign key
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade'); // Optional: delete history saat user dihapus
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('rekomendasi_history');
     }
 };
+

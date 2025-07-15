@@ -50,10 +50,18 @@ public function destroy($id_online_course)
     return redirect()->back()->with('success', 'Course berhasil dihapus dari favorites!');
 }
 
+/*************  ✨ Windsurf Command ⭐  *************/
+    /**
+     * Retrieve and display the user's favorite courses.
+     *
+     * @return \Illuminate\View\View The view displaying the user's favorite courses with pagination.
+     */
+
+/*******  a7b49b1c-d8de-475e-8989-6f0ccbade5a4  *******/
 public function favoriteCourses()
 {
     $user = auth()->user();
-    $favoriteCourses = $user->favorites()->paginate(10); // atau get()
+    $favoriteCourses = $user->favorites()->paginate(10); 
 
     return view('user.favorite.favorite', compact('favoriteCourses'));
 }

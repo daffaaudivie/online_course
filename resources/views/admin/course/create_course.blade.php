@@ -45,13 +45,13 @@
                         {{-- Kategori --}}
                         <div>
                             <label class="block text-gray-700 font-medium mb-1">Kategori</label>
-                            <input type="text" name="kategori" class="w-full border border-gray-300 rounded p-2" placeholder="Contoh: Data Analis">
+                            <input type="text" name="kategori" class="w-full border border-gray-300 rounded p-2" placeholder="Contoh: Data Science">
                         </div>
 
                         {{-- Harga --}}
                         <div>
                             <label class="block text-gray-700 font-medium mb-1">Harga</label>
-                            <input type="text" name="harga" class="w-full border border-gray-300 rounded p-2" placeholder="Contoh: Gratis / Berbayar">
+                            <input type="text" name="harga" class="w-full border border-gray-300 rounded p-2" placeholder="Contoh: 500000">
                         </div>
 
                         {{-- Rating --}}
@@ -71,50 +71,37 @@
                             <label class="block text-gray-700 font-medium mb-1">Bahasa</label>
                             <select name="bahasa" class="w-full border border-gray-300 rounded p-2">
                                 <option value="Indonesia">Indonesia</option>
-                                <option value="Inggris">Inggris</option>
+                                <option value="Inggris">English</option>
                             </select>
                         </div>
 
                         {{-- Tipe Course --}}
-                        <div>
-                            <label class="block text-gray-700 font-medium mb-1">Tipe Course</label>
-                            <select name="tipe" class="w-full border border-gray-300 rounded p-2">
-                                <option value="">-- Pilih Tipe --</option>
-                                <option value="Specialization">Specialization</option>
-                                <option value="Professional Certificate">Professional Certificate</option>
-                                <option value="Guided Project">Guided Project</option>
-                            </select>
-                        </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1">Tipe Course</label>
+                                <input type="text" name="tipe" class="w-full border border-gray-300 rounded p-2" placeholder="Contoh: Specialization">
+                            </div>
 
                         {{-- Durasi --}}
                         <div>
                             <label class="block text-gray-700 font-medium mb-1">Durasi</label>
-                            <select name="durasi" class="w-full border border-gray-300 rounded p-2">
-                                <option value="0-3 Bulan">0-3 Bulan</option>
-                                <option value="4-6 Bulan">4-6 Bulan</option>
-                                <option value="> 6 Bulan">> 6 Bulan</option>
-                            </select>
+                            <input type="text" name="durasi" class="w-full border border-gray-300 rounded p-2" placeholder="Contoh: 6 Months">
                         </div>
 
                         {{-- Level --}}
                         <div>
                             <label class="block text-gray-700 font-medium mb-1">Tingkat Kesulitan</label>
                             <select name="level" class="w-full border border-gray-300 rounded p-2">
-                                <option value="Pemula">Pemula</option>
-                                <option value="Menengah">Menengah</option>
-                                <option value="Lanjutan">Lanjutan</option>
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
                             </select>
                         </div>
 
                         {{-- Platform --}}
-                        <div>
-                            <label class="block text-gray-700 font-medium mb-1">Platform</label>
-                            <select name="platform" class="w-full border border-gray-300 rounded p-2">
-                                <option value="Coursera">Coursera</option>
-                                <option value="edX">edX</option>
-                                <option value="Udemy">Udemy</option>
-                            </select>
-                        </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1">Platform</label>
+                                <input type="text" name="platform" class="w-full border border-gray-300 rounded p-2" placeholder="Contoh: Coursera">
+                            </div>
 
                         {{-- Link --}}
                         <div>
@@ -185,8 +172,7 @@
                         <ul class="text-sm text-yellow-700 space-y-1">
                             <li>• Pastikan format file sesuai dengan template yang disediakan</li>
                             <li>• Kolom yang wajib diisi: Judul, Link Course</li>
-                            <li>• Rating harus berupa angka 0-5</li>
-                            <li>• Jumlah Viewers harus berupa angka</li>
+                            <li>• Harga dab Jumlah Viewers harus berupa angka</li>
                             <li>• Link Course harus berupa URL yang valid</li>
                         </ul>
                     </div>

@@ -127,7 +127,7 @@ class RekomendasiController extends Controller
 
         // session()->forget(['rekomendasi_result', 'rekomendasi_filter']);
 
-        return redirect()->route('user.rekomendasi.riwayat')->with('success', 'Rekomendasi berhasil disimpan.');
+        return redirect()->route('rekomendasi.riwayat')->with('success', 'Rekomendasi berhasil disimpan.');
 
     }
 

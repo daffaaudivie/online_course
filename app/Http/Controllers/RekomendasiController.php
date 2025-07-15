@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ProfileMatchingHelper;
-use App\Models\Online_course;
+use App\Models\OnlineCourse;
 use App\Models\RekomendasiHistory;
 use App\Models\RekomendasiDetail;
 use App\Exports\DetailRekomendasiExport;
@@ -17,11 +17,11 @@ class RekomendasiController extends Controller
 {
     public function form()
     {
-        $kategori = Online_course::select('kategori')->distinct()->pluck('kategori');
-        $tipe = Online_course::select('tipe')->distinct()->pluck('tipe');
-        $bahasa = Online_course::select('bahasa')->distinct()->pluck('bahasa');
-        $level = Online_course::select('level')->distinct()->pluck('level');
-        $platform = Online_course::select('platform')->distinct()->pluck('platform');
+        $kategori = OnlineCourse::select('kategori')->distinct()->pluck('kategori');
+        $tipe = OnlineCourse::select('tipe')->distinct()->pluck('tipe');
+        $bahasa = OnlineCourse::select('bahasa')->distinct()->pluck('bahasa');
+        $level = OnlineCourse::select('level')->distinct()->pluck('level');
+        $platform = OnlineCourse::select('platform')->distinct()->pluck('platform');
         
         // Add empty courses collection
         $courses = collect([]);
@@ -38,7 +38,7 @@ class RekomendasiController extends Controller
         'tipe', 'level', 'durasi', 'platform'
     ]);
 
-    $courses = Online_course::all();
+    $courses = OnlineCourse::all();
     $hasil = [];
 
     // Nilai ideal yang konsisten dengan return values helper functions
@@ -88,11 +88,11 @@ class RekomendasiController extends Controller
     // Simpan sementara di session
     session(['rekomendasi_result' => $rekomendasi, 'rekomendasi_filter' => $preferensi]);
 
-    $kategori = Online_course::select('kategori')->distinct()->pluck('kategori');
-    $tipe = Online_course::select('tipe')->distinct()->pluck('tipe');
-    $bahasa = Online_course::select('bahasa')->distinct()->pluck('bahasa');
-    $level = Online_course::select('level')->distinct()->pluck('level');
-    $platform = Online_course::select('platform')->distinct()->pluck('platform');
+    $kategori = OnlineCourse::select('kategori')->distinct()->pluck('kategori');
+    $tipe = OnlineCourse::select('tipe')->distinct()->pluck('tipe');
+    $bahasa = OnlineCourse::select('bahasa')->distinct()->pluck('bahasa');
+    $level = OnlineCourse::select('level')->distinct()->pluck('level');
+    $platform = OnlineCourse::select('platform')->distinct()->pluck('platform');
 
     return view('user.rekomendasi.rekomendasi', compact(
         'rekomendasi', 'kategori', 'tipe', 'bahasa', 'level', 'platform', 'courses'
@@ -128,6 +128,7 @@ class RekomendasiController extends Controller
         // session()->forget(['rekomendasi_result', 'rekomendasi_filter']);
 
         return redirect()->route('rekomendasi.riwayat')->with('success', 'Rekomendasi berhasil disimpan.');
+
 
     }
 

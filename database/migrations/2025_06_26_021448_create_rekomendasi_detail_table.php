@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('rekomendasi_detail', function (Blueprint $table) {
@@ -19,25 +16,22 @@ return new class extends Migration
                   ->constrained('rekomendasi_history')
                   ->onDelete('cascade');
 
-            // FK ke online_course
-            $table->foreignId('online_course_id')
-                  ->constrained('online_course')
+            // FK ke online_course (pakai manual jika nama tabelnya bukan 'online_courses')
+            $table->unsignedBigInteger('online_course_id');
+            $table->foreign('online_course_id')
+                  ->references('id')
+                  ->on('online_course') // Ubah ke 'online_courses' jika itu nama tabelmu
                   ->onDelete('cascade');
 
-            // skor rekomendasi
             $table->double('skor', 8, 2);
-
-            // Optional: track waktu
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('rekomendasi_detail');
     }
 };
+
 

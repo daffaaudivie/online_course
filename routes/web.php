@@ -56,7 +56,8 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::post('course/import/excel', [CourseController::class, 'import'])
         ->name('course.import');
     Route::get('admin/online_course/{id_online_course}/edit', [CourseController::class, 'edit'])->name('course.edit');
-        Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria.index');
+    Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria.index');
+    Route::get('/users', [AdminController::class, 'userView'])->name('admin.userView');
 
 
     // ✅ Perbaikan: chaining parameter() di dalam resource() method

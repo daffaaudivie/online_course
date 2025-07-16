@@ -177,6 +177,30 @@
                                     </a>
                                 </div>
                             </div>
+                            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" class="w-6 h-6 stroke-red-600">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                                        </svg>
+                                    </div>
+                                    <h2 class="text-xl font-bold text-gray-900">
+                                        User
+                                    </h2>
+                                </div>
+
+                                <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                                    Kelola data pengguna yang terdaftar dalam sistem. Lihat informasi lengkap user dan lakukan manajemen akun pengguna.
+                                </p>
+                                <div class="mt-6">
+                                    <a href="{{ route('admin.userView') }}" class="inline-flex items-center font-semibold text-blue-700 hover:text-blue-900 transition-colors duration-200">
+                                        Lihat User
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ms-1 w-5 h-5 fill-blue-500">
+                                            <path fill-rule="evenodd" d="M5 10a.75.75 0 01.75-.75h6.638L10.23 7.29a.75.75 0 111.04-1.08l3.5 3.25a.75.75 0 010 1.08l-3.5 3.25a.75.75 0 11-1.04-1.08l2.158-1.96H5.75A.75.75 0 015 10z" clip-rule="evenodd" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -199,6 +223,8 @@
                             </div>
                         </div>
                     </div>
+
+                    
 
                 </div>
             </div>

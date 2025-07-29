@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Models\Online_course;
+use App\Models\OnlineCourse;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -38,13 +38,13 @@ class CourseImport implements
     {
         // Debug: Cek koneksi database dan tabel
         try {
-            $model = new Online_course();
+            $model = new OnlineCourse();
             Log::info("=== IMPORT INITIALIZATION ===");
             Log::info("Table name from Model: " . $model->getTable());
             Log::info("Database connection: " . DB::connection()->getName());
             
             // Test query ke tabel
-            $testCount = Online_course::count();
+            $testCount = OnlineCourse::count();
             Log::info("Test query berhasil. Total records: " . $testCount);
             
         } catch (\Exception $e) {
@@ -163,7 +163,7 @@ class CourseImport implements
             Log::info("Creating course with data:", $courseData);
 
             // Buat course baru
-            $course = Online_course::create($courseData);
+            $course = OnlineCourse::create($courseData);
             
             if ($course) {
                 $this->successCount++;

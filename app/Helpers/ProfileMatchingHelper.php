@@ -140,57 +140,62 @@ class ProfileMatchingHelper
     }
 
     public static function convertHargaToActual($hargaCourse, $preferensiHarga): int
-    {
-        if (empty($preferensiHarga)) {
-            return 1;
-        }
-
-        $preferensi = (int) $preferensiHarga;
-
-        switch ($preferensi) {
-            case 0:
-                return $hargaCourse == 0 ? 4 : 1;
-                
-            case 100000:
-                if ($hargaCourse < 100000) {
-                    return 4;
-                } elseif ($hargaCourse <= 150000) {
-                    return 2;
-                } else {
-                    return 1;
-                }
-                
-            case 500000:
-                if ($hargaCourse < 500000) {
-                    return 4;
-                } elseif ($hargaCourse <= 700000) {
-                    return 2;
-                } else {
-                    return 1;
-                }
-                
-            case 1000000:
-                if ($hargaCourse < 1000000) {
-                    return 4;
-                } elseif ($hargaCourse <= 1200000) {
-                    return 2;
-                } else {
-                    return 1;
-                }
-                
-            case 1000001:
-                if ($hargaCourse > 1000000) {
-                    return 4;
-                } elseif ($hargaCourse >= 750000) {
-                    return 2;
-                } else {
-                    return 1;
-                }
-                
-            default:
-                return 1;
-        }
+{
+    if (empty($preferensiHarga)) {
+        return 1;
     }
+
+    $preferensi = (int) $preferensiHarga;
+
+    switch ($preferensi) {
+        // Preferensi: Free
+        case 0:
+            return $hargaCourse == 0 ? 4 : ($hargaCourse <= 100000 ? 2 : 1);
+
+        // Preferensi: 0 - 100K
+        case 100000:
+            if ($hargaCourse > 0 && $hargaCourse <= 100000) {
+                return 4;
+            } elseif ($hargaCourse <= 500000) {
+                return 2;
+            } else {
+                return 1;
+            }
+
+        // Preferensi: 100K - 500K
+        case 500000:
+            if ($hargaCourse >= 100000 && $hargaCourse <= 500000) {
+                return 4;
+            } elseif ($hargaCourse <= 1000000) {
+                return 2;
+            } else {
+                return 1;
+            }
+
+        // Preferensi: 500K - 1JT
+        case 1000000:
+            if ($hargaCourse > 500000 && $hargaCourse <= 1000000) {
+                return 4;
+            } elseif ($hargaCourse > 100000 && $hargaCourse <= 500000) {
+                return 2;
+            } else {
+                return 1;
+            }
+
+        // Preferensi: > 1JT
+        case 1000001:
+            if ($hargaCourse > 1000000) {
+                return 4;
+            } elseif ($hargaCourse > 500000 && $hargaCourse <= 1000000) {
+                return 2;
+            } else {
+                return 1;
+            }
+
+        default:
+            return 1;
+    }
+}
 
     public static function normalizeDurasi($durasi): string
     {

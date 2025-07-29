@@ -25,17 +25,13 @@ class ProfileMatchingHelper
             -3 => 2.0,
             4 => 1.5,
             -4 => 1.0,
-            default => 1.0, // fallback jika tidak cocok
+            default => 1.0, 
         };
         
         Log::info("Gap {$gap} -> Bobot {$bobot}");
         
         return $bobot;
     }
-
-    /**
-     * Method untuk menghitung skor Profile Matching
-     */
      public static function interpolateBobot(float $bobot): float
     {
         $x0 = 1;   $x1 = 5;
@@ -64,19 +60,13 @@ class ProfileMatchingHelper
 
         return (0.7 * $cf) + (0.3 * $sf);
     }
-    // ... fungsi convert lainnya tetap sama ...
-    
-    /**
-     * Konversi kategori course ke nilai aktual (5 = sesuai preferensi).
-     */
+ 
     public static function convertKategori($kategori, $preferensi): int
     {
         return strtolower($kategori) === strtolower($preferensi) ? 5 : 1;
     }
 
-    /**
-     * Konversi tipe course ke nilai aktual sesuai preferensi.
-     */
+  
     public static function convertTipe($tipe, $preferensi): int
     {
         if (empty($preferensi)) {
@@ -85,17 +75,11 @@ class ProfileMatchingHelper
         return strtolower($tipe) === strtolower($preferensi) ? 3 : 1;
     }
 
-    /**
-     * Konversi bahasa ke nilai aktual (3 ideal).
-     */
     public static function convertBahasa($bahasa, $preferensi): int
     {
         return strtolower($bahasa) === strtolower($preferensi) ? 3 : 1;
     }
 
-    /**
-     * Konversi level kesulitan ke nilai aktual sesuai preferensi.
-     */
     public static function convertLevel($levelCourse, $preferensi): int
 {
     if (empty($preferensi)) return 1;
@@ -103,9 +87,6 @@ class ProfileMatchingHelper
     return strtolower($levelCourse) === strtolower($preferensi) ? 3 : 1;
 }
 
-    /**
-     * Konversi platform ke nilai aktual sesuai preferensi.
-     */
     public static function convertPlatform($platform, $preferensi): int
     {
         if (empty($preferensi)) {
@@ -114,9 +95,6 @@ class ProfileMatchingHelper
         return strtolower($platform) === strtolower($preferensi) ? 3 : 1;
     }
 
-    /**
-     * Konversi rating (1–5) ke bobot interpolasi.
-     */
     public static function convertRatingToActual($ratingCourse, $preferensiRange): int
     {
         if (str_contains($preferensiRange, '-')) {
@@ -135,9 +113,6 @@ class ProfileMatchingHelper
         return 3;
     }
 
-    /**
-     * Konversi jumlah viewers ke bobot.
-     */
     public static function convertViewersToActual($viewersCourse, $preferensiRange): int
     {
         if (str_contains($preferensiRange, '-')) {

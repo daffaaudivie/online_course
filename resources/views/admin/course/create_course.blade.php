@@ -30,13 +30,17 @@
                     {{-- Judul --}}
                     <div class="mb-4">
                         <label class="block text-gray-700 font-medium mb-1">Judul</label>
-                        <input type="text" name="judul" class="w-full border border-gray-300 rounded p-2" required>
+                        <input type="text" name="judul" class="w-full border border-gray-300 rounded p-2" required 
+                               oninvalid="this.setCustomValidity('Please fill out this field')" 
+                               oninput="this.setCustomValidity('')">
                     </div>
 
                     {{-- Deskripsi --}}
                     <div class="mb-6">
                         <label class="block text-gray-700 font-medium mb-1">Deskripsi</label>
-                        <textarea name="deskripsi" rows="4" class="w-full border border-gray-300 rounded p-2"></textarea>
+                        <textarea name="deskripsi" rows="4" class="w-full border border-gray-300 rounded p-2" required
+                                  oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                  oninput="this.setCustomValidity('')"></textarea>
                     </div>
 
                     {{-- Grid Input --}}
@@ -45,68 +49,152 @@
                         {{-- Kategori --}}
                         <div>
                             <label class="block text-gray-700 font-medium mb-1">Kategori</label>
-                            <input type="text" name="kategori" class="w-full border border-gray-300 rounded p-2" placeholder="Contoh: Data Science">
+                            <input type="text" name="kategori" class="w-full border border-gray-300 rounded p-2" 
+                                   placeholder="Contoh: Data Science" required
+                                   oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                   oninput="this.setCustomValidity('')">
                         </div>
 
                         {{-- Harga --}}
                         <div>
-                            <label class="block text-gray-700 font-medium mb-1">Harga</label>
-                            <input type="text" name="harga" class="w-full border border-gray-300 rounded p-2" placeholder="Contoh: 500000">
+                            <label class="block text-gray-700 font-medium mb-1">Harga (Rp)</label>
+                            <input type="number" name="harga" class="w-full border border-gray-300 rounded p-2" 
+                                   placeholder="500000" min="0" required
+                                   oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                   oninput="this.setCustomValidity(''); formatHarga(this)">
+                            <small class="text-gray-500">Masukkan angka saja (tanpa titik atau koma)</small>
                         </div>
 
                         {{-- Rating --}}
                         <div>
                             <label class="block text-gray-700 font-medium mb-1">Rating</label>
-                            <input type="number" step="0.1" max="5" name="rating" class="w-full border border-gray-300 rounded p-2" placeholder="Contoh: 4.5">
+                            <input type="number" step="0.1" max="5" min="0" name="rating" class="w-full border border-gray-300 rounded p-2" 
+                                   placeholder="Contoh: 1.0-5.0" required
+                                   oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                   oninput="this.setCustomValidity('')">
+                                   <small class="text-gray-500">Tambahkan titik diantara nomor</small>
                         </div>
 
                         {{-- Jumlah Viewers --}}
                         <div>
                             <label class="block text-gray-700 font-medium mb-1">Jumlah Viewers</label>
-                            <input type="number" name="jumlah_viewers" class="w-full border border-gray-300 rounded p-2" placeholder="Contoh: 5000">
+                            <input type="number" name="jumlah_viewers" class="w-full border border-gray-300 rounded p-2" 
+                                   placeholder="5000" min="0" required
+                                   oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                   oninput="this.setCustomValidity('')">
+                                   <small class="text-gray-500">Masukkan angka saja (tanpa titik atau koma)</small>
                         </div>
 
                         {{-- Bahasa --}}
                         <div>
                             <label class="block text-gray-700 font-medium mb-1">Bahasa</label>
-                            <select name="bahasa" class="w-full border border-gray-300 rounded p-2">
+                            <select id="bahasa-dropdown" name="bahasa" class="w-full border border-gray-300 rounded p-2" required
+                                    oninvalid="this.setCustomValidity('Please select an option')" 
+                                    onchange="handleBahasaChange(this)">
+                                <option value="">Pilih Bahasa</option>
                                 <option value="Indonesia">Indonesia</option>
-                                <option value="Inggris">English</option>
+                                <option value="English">English</option>
+                                <option value="Mandarin">Mandarin</option>
+                                <option value="Spanish">Spanish</option>
+                                <option value="French">French</option>
+                                <option value="German">German</option>
+                                <option value="Japanese">Japanese</option>
+                                <option value="Korean">Korean</option>
+                                <option value="Arabic">Arabic</option>
+                                <option value="Portuguese">Portuguese</option>
+                                <option value="Russian">Russian</option>
+                                <option value="Italian">Italian</option>
+                                <option value="other">Lainnya (Tulis Sendiri)</option>
                             </select>
+                            <input type="text" id="bahasa-custom" placeholder="Masukkan bahasa lainnya..." 
+                                   class="w-full border border-gray-300 rounded p-2 mt-2 hidden"
+                                   oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                   oninput="this.setCustomValidity('')">
                         </div>
 
                         {{-- Tipe Course --}}
-                            <div>
-                                <label class="block text-gray-700 font-medium mb-1">Tipe Course</label>
-                                <input type="text" name="tipe" class="w-full border border-gray-300 rounded p-2" placeholder="Contoh: Specialization">
-                            </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Tipe Course</label>
+                            <select id="tipe-dropdown" name="tipe" class="w-full border border-gray-300 rounded p-2" required
+                                    oninvalid="this.setCustomValidity('Please select an option')" 
+                                    onchange="handleTipeChange(this)">
+                                <option value="">Pilih Tipe Course</option>
+                                <option value="Course">Course</option>
+                                <option value="Specialization">Specialization</option>
+                                <option value="Professional Certificate">Professional Certificate</option>
+                                <option value="Guided Project">Guided Project</option>
+                                <option value="Tutorial">Tutorial</option>
+                                <option value="Workshop">Workshop</option>
+                                <option value="other">Lainnya (Tulis Sendiri)</option>
+                            </select>
+                            <input type="text" id="tipe-custom" placeholder="Masukkan tipe course lainnya..." 
+                                   class="w-full border border-gray-300 rounded p-2 mt-2 hidden"
+                                   oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                   oninput="this.setCustomValidity('')">
+                        </div>
 
                         {{-- Durasi --}}
                         <div>
                             <label class="block text-gray-700 font-medium mb-1">Durasi</label>
-                            <input type="text" name="durasi" class="w-full border border-gray-300 rounded p-2" placeholder="Contoh: 6 Months">
+                            <div class="flex gap-2">
+                                <input type="number" id="durasi_angka" class="flex-1 border border-gray-300 rounded p-2" 
+                                       placeholder="6" min="1" required
+                                       oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                       oninput="this.setCustomValidity(''); updateDurasi()">
+                                <select id="durasi_satuan" class="flex-1 border border-gray-300 rounded p-2" required
+                                        onchange="updateDurasi()">
+                                    <option value="">Pilih Satuan</option>
+                                    <option value="days">Hari</option>
+                                    <option value="weeks">Minggu</option>
+                                    <option value="months">Bulan</option>
+                                </select>
+                            </div>
+                            <input type="hidden" name="durasi" id="durasi_hidden">
+                            <small class="text-gray-500">Contoh: 6 Bulan akan tersimpan sebagai "6 months"</small>
                         </div>
 
                         {{-- Level --}}
                         <div>
                             <label class="block text-gray-700 font-medium mb-1">Tingkat Kesulitan</label>
-                            <select name="level" class="w-full border border-gray-300 rounded p-2">
+                            <select name="level" class="w-full border border-gray-300 rounded p-2" required
+                                    oninvalid="this.setCustomValidity('Please select an option')" 
+                                    onchange="this.setCustomValidity('')">
+                                <option value="">Pilih Tingkat Kesulitan</option>
                                 <option value="Beginner">Beginner</option>
                                 <option value="Intermediate">Intermediate</option>
                                 <option value="Advanced">Advanced</option>
+                                <option value="Unknown">Unknown</option>
                             </select>
                         </div>
 
                         {{-- Platform --}}
-                            <div>
-                                <label class="block text-gray-700 font-medium mb-1">Platform</label>
-                                <input type="text" name="platform" class="w-full border border-gray-300 rounded p-2" placeholder="Contoh: Coursera">
-                            </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Platform</label>
+                            <select id="platform-dropdown" name="platform" class="w-full border border-gray-300 rounded p-2" required
+                                    oninvalid="this.setCustomValidity('Please select an option')" 
+                                    onchange="handlePlatformChange(this)">
+                                <option value="">Pilih Platform</option>
+                                <option value="Coursera">Coursera</option>
+                                <option value="Udemy">Udemy</option>
+                                <option value="edX">edX</option>
+                                <option value="Udacity">Udacity</option>
+                                <option value="Codecademy">Codecademy</option>
+                                <option value="FutureLearn">FutureLearn</option>
+                                <option value="other">Lainnya (Tulis Sendiri)</option>
+                            </select>
+                            <input type="text" id="platform-custom" placeholder="Masukkan nama platform lainnya..." 
+                                   class="w-full border border-gray-300 rounded p-2 mt-2 hidden"
+                                   oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                   oninput="this.setCustomValidity('')">
+                        </div>
 
                         {{-- Link --}}
                         <div>
                             <label class="block text-gray-700 font-medium mb-1">Link Course</label>
-                            <input type="url" name="link" class="w-full border border-gray-300 rounded p-2" required>
+                            <input type="url" name="link" class="w-full border border-gray-300 rounded p-2" required
+                                   placeholder="https://example.com/course"
+                                   oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                   oninput="this.setCustomValidity('')">
                         </div>
                     </div>
 
@@ -160,7 +248,9 @@
                                     </p>
                                     <p class="text-xs text-gray-500">Hanya file .xlsx atau .xls</p>
                                 </div>
-                                <input id="excel-file" name="excel_file" type="file" class="hidden" accept=".xlsx,.xls" required onchange="showFileName(this)">
+                                <input id="excel-file" name="excel_file" type="file" class="hidden" accept=".xlsx,.xls" required 
+                                       oninvalid="this.setCustomValidity('Please fill out this field')" 
+                                       oninput="this.setCustomValidity('')" onchange="showFileName(this)">
                             </label>
                         </div>
                         <div id="file-name" class="mt-2 text-sm text-gray-600 hidden"></div>
@@ -171,9 +261,14 @@
                         <h4 class="font-semibold text-yellow-800 mb-2">⚠️ Petunjuk Import:</h4>
                         <ul class="text-sm text-yellow-700 space-y-1">
                             <li>• Pastikan format file sesuai dengan template yang disediakan</li>
-                            <li>• Kolom yang wajib diisi: Judul, Link Course</li>
-                            <li>• Harga dab Jumlah Viewers harus berupa angka</li>
+                            <li>• Semua kolom harus diisi</li>
+                            <li>• Harga dan Jumlah Viewers harus berupa angka</li>
                             <li>• Link Course harus berupa URL yang valid</li>
+                            <li>• Tipe Course harus salah satu dari: Course, Specialization, Professional Certificate, dll.</li>
+                            <li>• Level harus salah satu dari: Beginner, Intermediate, Advanced, Expert</li>
+                            <li>• Platform harus salah satu dari platform yang tersedia</li>
+                            <li>• Bahasa harus salah satu dari bahasa yang tersedia</li>
+                            <li>• Durasi harus dalam format: "angka satuan" (contoh: "6 months", "2 weeks")</li>
                         </ul>
                     </div>
 
@@ -226,5 +321,108 @@ function showFileName(input) {
         fileNameDiv.classList.remove('hidden');
     }
 }
+
+function updateDurasi() {
+    const angka = document.getElementById('durasi_angka').value;
+    const satuan = document.getElementById('durasi_satuan').value;
+    const hiddenInput = document.getElementById('durasi_hidden');
+    
+    if (angka && satuan) {
+        hiddenInput.value = angka + ' ' + satuan;
+    } else {
+        hiddenInput.value = '';
+    }
+}
+
+function handleBahasaChange(selectElement) {
+    const customInput = document.getElementById('bahasa-custom');
+    
+    if (selectElement.value === 'other') {
+        // Show custom input and transfer name attribute
+        customInput.classList.remove('hidden');
+        customInput.required = true;
+        customInput.setAttribute('name', 'bahasa');
+        selectElement.removeAttribute('name');
+        selectElement.setCustomValidity('');
+    } else {
+        // Hide custom input and keep name on dropdown
+        customInput.classList.add('hidden');
+        customInput.required = false;
+        customInput.value = '';
+        customInput.removeAttribute('name');
+        selectElement.setAttribute('name', 'bahasa');
+        
+        if (selectElement.value !== '') {
+            selectElement.setCustomValidity('');
+        } else {
+            selectElement.setCustomValidity('Please select an option');
+        }
+    }
+}
+
+function handleTipeChange(selectElement) {
+    const customInput = document.getElementById('tipe-custom');
+    
+    if (selectElement.value === 'other') {
+        // Show custom input and transfer name attribute
+        customInput.classList.remove('hidden');
+        customInput.required = true;
+        customInput.setAttribute('name', 'tipe');
+        selectElement.removeAttribute('name');
+        selectElement.setCustomValidity('');
+    } else {
+        // Hide custom input and keep name on dropdown
+        customInput.classList.add('hidden');
+        customInput.required = false;
+        customInput.value = '';
+        customInput.removeAttribute('name');
+        selectElement.setAttribute('name', 'tipe');
+        
+        if (selectElement.value !== '') {
+            selectElement.setCustomValidity('');
+        } else {
+            selectElement.setCustomValidity('Please select an option');
+        }
+    }
+}
+
+function handlePlatformChange(selectElement) {
+    const customInput = document.getElementById('platform-custom');
+    
+    if (selectElement.value === 'other') {
+        // Show custom input and transfer name attribute
+        customInput.classList.remove('hidden');
+        customInput.required = true;
+        customInput.setAttribute('name', 'platform');
+        selectElement.removeAttribute('name');
+        selectElement.setCustomValidity('');
+    } else {
+        // Hide custom input and keep name on dropdown
+        customInput.classList.add('hidden');
+        customInput.required = false;
+        customInput.value = '';
+        customInput.removeAttribute('name');
+        selectElement.setAttribute('name', 'platform');
+        
+        if (selectElement.value !== '') {
+            selectElement.setCustomValidity('');
+        } else {
+            selectElement.setCustomValidity('Please select an option');
+        }
+    }
+}
+
+// Initialize the form properly
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure all dropdowns have name attributes by default
+    document.getElementById('bahasa-dropdown').setAttribute('name', 'bahasa');
+    document.getElementById('tipe-dropdown').setAttribute('name', 'tipe');
+    document.getElementById('platform-dropdown').setAttribute('name', 'platform');
+    
+    // Ensure custom inputs don't have name attributes initially
+    document.getElementById('bahasa-custom').removeAttribute('name');
+    document.getElementById('tipe-custom').removeAttribute('name');
+    document.getElementById('platform-custom').removeAttribute('name');
+});
 </script>
 @endsection
